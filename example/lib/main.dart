@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
 
 class PermissionWidget extends StatefulWidget {
   const PermissionWidget(this._permissionGroup);
-
+  //final PermissionGroup _dd;
   final PermissionGroup _permissionGroup;
 
   @override
