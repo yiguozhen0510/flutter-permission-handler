@@ -3,6 +3,7 @@ package com.baseflow.permissionhandler;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -442,9 +443,14 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
                 if (!mRequestResults.containsKey(permission)) {
                     mRequestResults.put(permission, PERMISSION_STATUS_GRANTED);
                 }
+
+                if (permission == PERMISSION_GROUP_BLUETOOTH && ContextCompat.checkSelfPermission(mRegistrar.context(), Manifest.permission.ACCESS_COARSE_LOCATION) ==  PackageManager.PERMISSION_GRANTED) {
+                    if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()){
+                        BluetoothAdapter.getDefaultAdapter().enable();
+                    }
+                }
             }
         }
-
         final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
         if (permissionsToRequest.size() > 0) {
             ActivityCompat.requestPermissions(mRegistrar.activity(), requestPermissions, PERMISSION_CODE);
@@ -491,14 +497,17 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
                 mRequestResults.put(permission, permissionStatus);
             } else if (permission == PERMISSION_GROUP_BLUETOOTH) {
-
                 if (!mRequestResults.containsKey(PERMISSION_GROUP_BLUETOOTH)) {
                     mRequestResults.put(PERMISSION_GROUP_BLUETOOTH, toPermissionStatus(grantResults[i]));
                 }
-                @PermissionStatus int permissionStatus = determineActualLocationStatus(grantResults[i]);
-                if (VERSION.SDK_INT >= VERSION_CODES.M && !mRequestResults.containsKey(PERMISSION_GROUP_LOCATION)){
-                    mRequestResults.put(PERMISSION_GROUP_LOCATION,permissionStatus);
+                //申請藍牙權限成功，同時開啟藍牙
+                if (toPermissionStatus(grantResults[i]) == PERMISSION_STATUS_GRANTED
+                && ContextCompat.checkSelfPermission(mRegistrar.context(), Manifest.permission.ACCESS_COARSE_LOCATION) ==  PackageManager.PERMISSION_GRANTED) {
+                    if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()){
+                        BluetoothAdapter.getDefaultAdapter().enable();
+                    }
                 }
+
             } else if (!mRequestResults.containsKey(permission)) {
                 mRequestResults.put(permission, toPermissionStatus(grantResults[i]));
             }
@@ -685,14 +694,14 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
             case PERMISSION_GROUP_BLUETOOTH:
                 if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                    if (hasPermissionInManifest(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                        permissionNames.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+                    }
                     if (hasPermissionInManifest(Manifest.permission.BLUETOOTH)) {
                         permissionNames.add(Manifest.permission.BLUETOOTH);
                     }
                     if (hasPermissionInManifest(Manifest.permission.BLUETOOTH_ADMIN)) {
                         permissionNames.add(Manifest.permission.BLUETOOTH_ADMIN);
-                    }
-                    if (hasPermissionInManifest(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                        permissionNames.add(Manifest.permission.ACCESS_COARSE_LOCATION);
                     }
                 }
                 break;
