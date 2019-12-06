@@ -309,6 +309,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
                     }
                 }
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                if (name.equals(Manifest.permission.BLUETOOTH) || name.equals(Manifest.permission.BLUETOOTH_ADMIN)) {
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && permissionStatus == PERMISSION_STATUS_GRANTED) {
+                        if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+                            BluetoothAdapter.getDefaultAdapter().enable();
+                        }
+                    }
+                }
                 if (permissionStatus == PackageManager.PERMISSION_DENIED) {
                     return PERMISSION_STATUS_DENIED;
                 } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
@@ -444,8 +451,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
                     mRequestResults.put(permission, PERMISSION_STATUS_GRANTED);
                 }
 
-                if (permission == PERMISSION_GROUP_BLUETOOTH && ContextCompat.checkSelfPermission(mRegistrar.context(), Manifest.permission.ACCESS_COARSE_LOCATION) ==  PackageManager.PERMISSION_GRANTED) {
-                    if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()){
+                if (permission == PERMISSION_GROUP_BLUETOOTH && ContextCompat.checkSelfPermission(mRegistrar.context(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                         BluetoothAdapter.getDefaultAdapter().enable();
                     }
                 }
@@ -502,8 +509,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
                 }
                 //申請藍牙權限成功，同時開啟藍牙
                 if (toPermissionStatus(grantResults[i]) == PERMISSION_STATUS_GRANTED
-                && ContextCompat.checkSelfPermission(mRegistrar.context(), Manifest.permission.ACCESS_COARSE_LOCATION) ==  PackageManager.PERMISSION_GRANTED) {
-                    if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()){
+                        && ContextCompat.checkSelfPermission(mRegistrar.context(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                         BluetoothAdapter.getDefaultAdapter().enable();
                     }
                 }
