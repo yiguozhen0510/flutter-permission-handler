@@ -309,13 +309,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
                     }
                 }
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                if (name.equals(Manifest.permission.BLUETOOTH) || name.equals(Manifest.permission.BLUETOOTH_ADMIN)) {
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && permissionStatus == PERMISSION_STATUS_GRANTED) {
-                        if (BluetoothAdapter.getDefaultAdapter() != null && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-                            BluetoothAdapter.getDefaultAdapter().enable();
-                        }
-                    }
-                }
                 if (permissionStatus == PackageManager.PERMISSION_DENIED) {
                     return PERMISSION_STATUS_DENIED;
                 } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
