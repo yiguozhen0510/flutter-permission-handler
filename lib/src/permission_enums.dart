@@ -156,6 +156,8 @@ class PermissionGroup {
   /// The unknown permission only used for return type, never requested
   static const PermissionGroup unknown = PermissionGroup._(17);
 
+  /// Android:bluetooth permission
+  /// iOS:bluetooth permission
   static const PermissionGroup bluetooth = PermissionGroup._(18);
 
   static const List<PermissionGroup> values = <PermissionGroup>[
@@ -178,7 +180,7 @@ class PermissionGroup {
     notification,
     unknown,
     //bluetooth
-    bluetooth
+    bluetooth,
   ];
 
   static const List<String> _names = <String>[

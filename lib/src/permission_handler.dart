@@ -83,7 +83,7 @@ class PermissionHandler {
     final List<int> data = Codec.encodePermissionGroups(permissions);
     final Map<dynamic, dynamic> status =
         await _methodChannel.invokeMethod('requestPermissions', data);
-
+//No permissions found in manifest
     return Codec.decodePermissionRequestResult(Map<int, int>.from(status));
   }
 

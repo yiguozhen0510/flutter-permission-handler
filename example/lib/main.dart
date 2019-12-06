@@ -16,8 +16,12 @@ class MyApp extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () {
-                PermissionHandler().openAppSettings().then((bool hasOpened) =>
-                    debugPrint('App Settings opened: ' + hasOpened.toString()));
+//                PermissionHandler().openAppSettings().then((bool hasOpened) =>
+//                    debugPrint('App Settings opened: ' + hasOpened.toString()));
+              //PermissionGroup.bluetooth
+                List<PermissionGroup> values  = [];
+                values.add(PermissionGroup.bluetooth);
+                PermissionHandler().requestPermissions(values);
               },
             )
           ],
